@@ -8,7 +8,6 @@ import dev.jeka.core.tool.JkInit;
 import dev.jeka.core.tool.builtins.java.JkPluginJava;
 
 import java.util.jar.Attributes;
-import java.util.stream.LongStream;
 
 class Build extends JkClass {
     static final String PROJECT_VERSION = "1.0";
@@ -46,34 +45,17 @@ class Build extends JkClass {
         java.pack();
     }
 
-    @JkDoc("Compiles and run the main class.")
+    @JkDoc("Runs the project jar.")
     public void run() {
         var jar = java.getProject().getPublication().getArtifactProducer().getMainArtifactPath();
-        Util.time("Java process", 10, () -> {
-            JkJavaProcess.of()
-                    .withPrintCommand(false)
-                    .andCommandLine("-Dnashorn.args=--no-deprecation-warning")
-                    .runJarSync(jar);
-        });
+        JkJavaProcess.of()
+                .withPrintCommand(false)
+                .andCommandLine("-Dnashorn.args=--no-deprecation-warning")
+                .runJarSync(jar);
     }
 
     public static void main(String[] args) {
         JkInit.instanceOf(Build.class, args).cleanPack();
     }
 
-}
-
-class Util {
-    static void time(String description, int times, Runnable action) {
-        System.out.println("Running '" + description + "'... ");
-        var start = System.currentTimeMillis();
-        long[] runs = new long[times];
-        for (int i = 0; i < times; i++) {
-            action.run();
-            var now = System.currentTimeMillis();
-            runs[i] = now - start;
-            start = now;
-        }
-        System.out.println("Result: " + LongStream.of(runs).summaryStatistics());
-    }
 }
