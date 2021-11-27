@@ -4,10 +4,26 @@ import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.io.IOException;
 
 public class JsEmbed {
     private final ScriptEngine engine = new ScriptEngineManager()
             .getEngineByName("nashorn");
+
+    public JsEmbed() {
+        // verify that D3 JS library is in the classpath
+        var d3 = getClass().getResourceAsStream(
+                "/META-INF/resources/webjars/d3-scale/4.0.2/dist/d3-scale.min.js");
+        if (d3 == null) {
+            System.out.println("ERROR: d3 is not in the classpath!");
+        } else {
+            try {
+                d3.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public Object eval(String script) {
         try {

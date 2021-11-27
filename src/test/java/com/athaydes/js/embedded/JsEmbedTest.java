@@ -204,9 +204,4 @@ public class JsEmbedTest {
         assertEquals(new Pojo("jsPojo", 11), jsPojo);
     }
 
-    @Test
-    void canReturnJson() {
-        assertEquals("{\"hello\":true,\"foo\":\"bar\"}",
-                js.eval("JSON.stringify({hello: true, foo: \"bar\"})"));
-    }
 }
