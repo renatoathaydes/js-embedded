@@ -89,6 +89,15 @@ public class JsEmbedTest {
     }
 
     @Test
+    public void canReturnJavaMapWithList() {
+        var map = (Map<?, ?>) js.eval("map = {\n" +
+                "  \"hello\": [\"world\"]\n" +
+                "};");
+        assertEquals(1, map.size());
+        assertEquals(List.of("world"), map.get("hello"));
+    }
+
+    @Test
     public void canDoBasicArithmetics() {
         assertNumbersEqual(5, js.eval("2 + 3"));
         assertNumbersEqual(14, js.eval("5 * 2 + 4"));

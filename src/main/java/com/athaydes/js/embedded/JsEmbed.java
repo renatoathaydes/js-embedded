@@ -1,27 +1,46 @@
 package com.athaydes.js.embedded;
 
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
+
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import static java.util.Objects.requireNonNull;
+
 public class JsEmbed {
+
     private final ScriptEngine engine = new ScriptEngineManager()
             .getEngineByName("nashorn");
 
     public JsEmbed() {
+        requireNonNull(engine, "Nashorn engine is not available");
         JsLibraries.verifyAllInClassPath();
+        eval("function __toJava__(obj) {\n" +
+                "  return Java.asJSONCompatible(obj);\n" +
+                " }");
     }
 
     public Object eval(String script) {
         try {
-            return engine.eval(script);
+            return convertToJava(engine.eval(script));
         } catch (ScriptException e) {
             throw new RuntimeException(e);
         }
     }
 
     public Object invoke(String functionName, Object... args) {
+        return convertToJava(invokeWithoutTypeConversion(functionName, args));
+    }
+
+    public void load(String... libraries) {
+        for (String lib : libraries) {
+            eval("load('classpath:" + lib + "');");
+        }
+    }
+
+    private Object invokeWithoutTypeConversion(String functionName, Object... args) {
         if (engine instanceof Invocable) {
             try {
                 return ((Invocable) engine).invokeFunction(functionName, args);
@@ -33,10 +52,12 @@ public class JsEmbed {
         }
     }
 
-    public void load(String... libraries) {
-        for (String lib : libraries) {
-            eval("load('classpath:" + lib + "');");
+    @SuppressWarnings("removal")
+    private Object convertToJava(Object jsObject) {
+        if (jsObject instanceof ScriptObjectMirror) {
+            return invokeWithoutTypeConversion("__toJava__", jsObject);
         }
+        return jsObject;
     }
 
     public static void main(String[] args) {
