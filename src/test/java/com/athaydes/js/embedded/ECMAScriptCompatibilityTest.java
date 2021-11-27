@@ -153,7 +153,7 @@ public class ECMAScriptCompatibilityTest {
 
     @Test
     void supportsECMA12StringReplaceAll() {
-        js.eval("function replaceAll(str, v) { return str.replaceAll(v, \"js\") }");
-        assertEquals("fjsjsg", js.invoke("replaceAll", "fXXg", "X"));
+        js.eval("function replaceAll(target, replacement) { return 'foo'.replaceAll(target, replacement) }");
+        assertEquals("fXX", js.invoke("replaceAll", "o", "X"));
     }
 }
