@@ -10,6 +10,21 @@ import static com.athaydes.js.embedded.CustomAsserts.assertNumbersEqual;
 import static com.athaydes.js.embedded.CustomAsserts.assertStartsWith;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Basic verification of compatibility with ECMAScript versions.
+ * <p>
+ * Nashorn only ever implemented support for ECMA 5.1.
+ * <ul>
+ * <li>ECMA5 - circa 2009</li>
+ * <li>ECMA6 (ES2015)</li>
+ * <li>ECMA7 (ES2016)</li>
+ * <li>ECMA8 (ES2017)</li>
+ * <li>ECMA9 (ES2018)</li>
+ * <li>ECMA10 (ES2019)</li>
+ * <li>ECMA11 (ES2020)</li>
+ * <li>ECMA12 (ES2021)</li>
+ * </ul>
+ */
 public class ECMAScriptCompatibilityTest {
     JsEmbed js = new JsEmbed();
 
@@ -116,5 +131,29 @@ public class ECMAScriptCompatibilityTest {
     @Test
     void supportsECMA9RestParameters() {
         js.eval("function restParameters(a, b, ...c) {}");
+    }
+
+    @Test
+    void supportsECMA10ArrayFlat() {
+        assertNumbersEqual(6, js.eval("var re10 = [1, [2, 3]];\n" +
+                "var re11 = re10.flat();\n" +
+                "var re12 = 0;\n" +
+                "for (var index in re11) {\n" +
+                "  re12 += re11[index];\n" +
+                "}" +
+                "re12"));
+    }
+
+    @Test
+    void supportsECMA11NullCoalescingOperator() {
+        js.eval("function getValueOrDefault(n) { return n ?? \"default\" }");
+        assertEquals("foo", js.invoke("getValueOrDefault", "foo"));
+        assertEquals("default", js.invoke("getValueOrDefault", new Object[]{null}));
+    }
+
+    @Test
+    void supportsECMA12StringReplaceAll() {
+        js.eval("function replaceAll(str, v) { return str.replaceAll(v, \"js\") }");
+        assertEquals("fjsjsg", js.invoke("replaceAll", "fXXg", "X"));
     }
 }
