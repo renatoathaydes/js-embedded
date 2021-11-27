@@ -30,7 +30,13 @@ public class JsEmbed {
     }
 
     public static void main(String[] args) {
-        var result = new JsEmbed().eval("2 + 3");
+        var script = "2 + 3";
+        System.out.println("Executing JS script:\n" +
+                "==========================\n" +
+                script + "\n" +
+                "--------------------------");
+
+        var result = new JsEmbed().eval(script);
 
         if (result instanceof Number) {
             System.out.println("Got number: " + result);
