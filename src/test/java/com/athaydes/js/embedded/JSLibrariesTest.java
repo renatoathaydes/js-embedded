@@ -9,8 +9,7 @@ public class JSLibrariesTest {
 
     @Test
     void canUseD3ScaleLibrary() {
-        js.eval("var d3 = loadWithNewGlobal('classpath:" +
-                "META-INF/resources/webjars/d3-scale/4.0.2/dist/d3-scale.min.js');");
+        js.load(JsLibraries.D3_SCALE_FILES);
 
         // example usage from https://github.com/d3/d3-scale
         js.eval("var x = d3.scaleLinear()\n" +

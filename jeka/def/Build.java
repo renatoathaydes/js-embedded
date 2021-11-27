@@ -26,7 +26,7 @@ class Build extends JkClass {
     }
 
     private JkDependencySet compileDependencies(JkDependencySet deps) {
-        return deps.and("org.webjars.npm:d3-scale:4.0.2");
+        return deps.and("org.webjars.npm:d3-scale:2.2.2");
     }
 
     private JkDependencySet testDependencies(JkDependencySet deps) {
