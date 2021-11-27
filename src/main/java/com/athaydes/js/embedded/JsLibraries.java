@@ -15,8 +15,13 @@ public final class JsLibraries {
             "META-INF/resources/webjars/d3-scale/2.2.2/dist/d3-scale.min.js",
     };
 
+    public static final String[] UNDERSCORE_FILES = {
+            "META-INF/resources/webjars/underscorejs/1.6.0/underscore-min.js"
+    };
+
     static void verifyAllInClassPath() {
         Stream.of(D3_SCALE_FILES).forEach(JsLibraries::verify);
+        Stream.of(UNDERSCORE_FILES).forEach(JsLibraries::verify);
     }
 
     private static void verify(String library) {
