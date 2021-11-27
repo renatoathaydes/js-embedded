@@ -1,5 +1,6 @@
 package com.athaydes.js.embedded;
 
+import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -13,6 +14,18 @@ public class JsEmbed {
             return engine.eval(script);
         } catch (ScriptException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public Object invoke(String functionName, Object... args) {
+        if (engine instanceof Invocable) {
+            try {
+                return ((Invocable) engine).invokeFunction(functionName, args);
+            } catch (ScriptException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            throw new IllegalStateException("ScriptEngine is not Invocable");
         }
     }
 
