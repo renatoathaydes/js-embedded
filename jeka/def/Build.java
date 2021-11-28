@@ -26,12 +26,14 @@ class Build extends JkClass {
     }
 
     private JkDependencySet compileDependencies(JkDependencySet deps) {
-        return deps.and("org.webjars.npm:d3-scale:2.2.2")
-                .and("org.webjars:underscorejs:1.6.0-3");
+        return deps.and(Dependencies.D3_SCALE2)
+                .and(Dependencies.UNDERSCORE_JS1);
     }
 
     private JkDependencySet testDependencies(JkDependencySet deps) {
-        return deps.and("org.junit.jupiter:junit-jupiter:5.6.2");
+        return deps.and(Dependencies.JUNIT5)
+                .and(Dependencies.JMH1)
+                .and(Dependencies.JMH_ANN1);
     }
 
     private JkJavaProject configureManifest() {
@@ -53,6 +55,18 @@ class Build extends JkClass {
                 .withPrintCommand(false)
                 .andCommandLine("-Dnashorn.args=--no-deprecation-warning")
                 .runJarSync(jar);
+    }
+
+    @JkDoc("Runs the benchmarks.")
+    public void bench() {
+        java.getProject().getConstruction().getTesting().getCompilation().runIfNecessary();
+
+        var testClasspath = java.getProject().getConstruction()
+                .getTesting().getTestClasspath();
+
+        JkJavaProcess.of()
+                .withClasspath(testClasspath)
+                .runClassSync("bench.Benchmarks");
     }
 
     public static void main(String[] args) {
