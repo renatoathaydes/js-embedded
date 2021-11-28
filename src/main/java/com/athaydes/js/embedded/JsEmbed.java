@@ -9,7 +9,7 @@ import javax.script.ScriptException;
 
 import static java.util.Objects.requireNonNull;
 
-public class JsEmbed {
+public final class JsEmbed {
 
     private final ScriptEngine engine = new ScriptEngineManager()
             .getEngineByName("nashorn");
